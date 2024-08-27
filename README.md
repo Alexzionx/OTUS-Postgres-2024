@@ -1,2 +1,2 @@
 # OTUS-Postgres-2024
-Labs
+Лабораторные работы по курсу OTUS БД Postgres
