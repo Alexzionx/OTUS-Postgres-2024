@@ -2,7 +2,7 @@
 2. **Установка Postgres**  
    под **root** или с **sudo**
    ```
-   apt undate
+   apt update
    apt upgrade -y
    apt install postgresql-14 -y
    ```
