@@ -1,19 +1,27 @@
 1. **создайте виртуальную машину c Ubuntu 20.04/22.04 LTS в ЯО/Virtual Box/докере**  
    Установка Ubuntu 22.04 на Proxmox  
-2. **поставьте на нее PostgreSQL 15 через sudo apt**
+2. **поставьте на нее PostgreSQL через sudo apt**
    ```
+   sudo apt install postgresql-14
    ```
 3. **проверьте что кластер запущен через sudo -u postgres pg_lsclusters**
    ```
+   sudo -u postgres pg_ctlcluster 14 main status
    ```
 4. **зайдите из под пользователя postgres в psql и сделайте произвольную таблицу с произвольным содержимым**
    ```
+   sudo -u postgres psql
    postgres=# create table test(c1 text);  
    postgres=# insert into test values('1');  
    \q
    ```
-остановите postgres например через sudo -u postgres pg_ctlcluster 15 main stop  
-создайте новый диск к ВМ размером 10GB  
+5. **остановите postgres например через sudo -u postgres pg_ctlcluster 14 main stop**
+   ```
+   sudo -u postgres pg_ctlcluster 14 main stop
+   ```
+6. **создайте новый диск к ВМ размером 10GB**
+   ```
+   ```
 добавьте свеже-созданный диск к виртуальной машине - надо зайти в режим ее редактирования и дальше выбрать пункт attach existing disk  
 проинициализируйте диск согласно инструкции и подмонтировать файловую систему, только не забывайте менять имя диска на актуальное,  
 в вашем случае это скорее всего будет /dev/sdb - https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux перезагрузите инстанс и убедитесь,  
