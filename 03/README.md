@@ -53,4 +53,16 @@
     sudo -u postgres psql
     select * from test;
     ```
-16. **задание со звездочкой : не удаляя существующий инстанс ВМ сделайте новый, поставьте на его PostgreSQL, удалите файлы с данными из /var/lib/postgres, перемонтируйте внешний диск который сделали ранее от первой виртуальной машины ко второй и запустите PostgreSQL на второй машине так чтобы он работал с данными на внешнем диске, расскажите как вы это сделали и что в итоге получилось.**
+16. **задание со звездочкой : не удаляя существующий инстанс ВМ сделайте новый, поставьте на его PostgreSQL, удалите файлы с данными из /var/lib/postgres, перемонтируйте внешний диск который сделали ранее от первой виртуальной машины ко второй и запустите PostgreSQL на второй машине так чтобы он работал с данными на внешнем диске, расскажите как вы это сделали и что в итоге получилось.**  
+    в консоли Proxmox перенес диск на другой инстанс
+    ```
+    sudo apt install postgresql-14
+    sudo -u postgres pg_ctlcluster 14 main stop
+    mount /dev/sdb1 /mnt/data
+    nano /etc/postgresql/14/main/postgresql.conf
+    заменил data_directory = '/var/lib/postgresql/14/main' на data_directory = '/mnt/data/main'
+    sudo -u postgres pg_ctlcluster 14 main start
+    sudo -u postgres psql
+    select * from test;
+    ```
+    СУБД работает с данными из примонтированного диска
