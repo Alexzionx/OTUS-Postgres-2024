@@ -109,54 +109,93 @@
    test=# update t1 set col=col||'l';
    ```
 10. **Посмотреть количество мертвых строчек в таблице и когда последний раз приходил автовакуум**
-   ```
-   SELECT relname, n_live_tup, n_dead_tup, last_autovacuum FROM pg_stat_user_TABLEs WHERE relname = 't1';  
-   relname | n_live_tup | n_dead_tup |        last_autovacuum  
-   ---------+------------+------------+-------------------------------  
-   t1      |    1000000 |    4999870 | 2024-10-06 12:32:39.754453+00  
-   ```
+    ```
+    SELECT relname, n_live_tup, n_dead_tup, last_autovacuum FROM pg_stat_user_TABLEs WHERE relname = 't1';  
+    relname | n_live_tup | n_dead_tup |        last_autovacuum  
+    ---------+------------+------------+-------------------------------  
+    t1      |    1000000 |    4999870 | 2024-10-06 12:32:39.754453+00  
+    ```
 11. **Подождать некоторое время, проверяя, пришел ли автовакуум**
-   ```
-   relname | n_live_tup | n_dead_tup |        last_autovacuum
-   ---------+------------+------------+-------------------------------
-   t1      |    1000000 |          0 | 2024-10-06 12:33:40.462274+00
-   ```
+    ```
+    relname | n_live_tup | n_dead_tup |        last_autovacuum
+    ---------+------------+------------+-------------------------------
+    t1      |    1000000 |          0 | 2024-10-06 12:33:40.462274+00
+    ```
 12. **5 раз обновить все строчки и добавить к каждой строчке любой символ**
-   ```
-   test=# update t1 set col=col||'t';
-   test=# update t1 set col=col||'q';
-   test=# update t1 set col=col||'5';
-   test=# update t1 set col=col||'1';
-   test=# update t1 set col=col||'l';
-   ```
+    ```
+    test=# update t1 set col=col||'t';
+    test=# update t1 set col=col||'q';
+    test=# update t1 set col=col||'5';
+    test=# update t1 set col=col||'1';
+    test=# update t1 set col=col||'l';
+    ```
 13. **Посмотреть размер файла с таблицей**
-   ```
-   ---
-   \dt+ t1
-                                   List of relations
-   Schema | Name | Type  |  Owner   | Persistence | Access method |  Size  | Description
-   --------+------+-------+----------+-------------+---------------+--------+-------------
-   public | t1   | table | postgres | permanent   | heap          | 260 MB |
-   (1 row)
-   ---
-   ```
+    ```
+    ---
+    \dt+ t1
+                                    List of relations
+    Schema | Name | Type  |  Owner   | Persistence | Access method |  Size  | Description
+    -------+------+-------+----------+-------------+---------------+--------+-------------
+    public | t1   | table | postgres | permanent   | heap          | 260 MB |
+    (1 row)
+    ---
+    ```
 14. **Отключить Автовакуум на конкретной таблице**
-   ```
-   alter table t1 set (autovacuum_enabled = off);
-   ```
+    ```
+    alter table t1 set (autovacuum_enabled = off);
+    ```
 15. **10 раз обновить все строчки и добавить к каждой строчке любой символ**
-   ```
-   ```
+    ```
+    update t1 set col=col||'a';
+    update t1 set col=col||'s';
+    update t1 set col=col||'1';
+    update t1 set col=col||'2';
+    update t1 set col=col||'3';
+    update t1 set col=col||'b';
+    update t1 set col=col||'n';
+    update t1 set col=col||'m';
+    update t1 set col=col||'y';
+    update t1 set col=col||'u';
+    ```
 16. **Посмотреть размер файла с таблицей**
-   ```
-   ```
+    ```
+    \dt+ t1
+    ---
+                                       List of relations
+    Schema | Name | Type  |  Owner   | Persistence | Access method |  Size  | Description
+    --------+------+-------+----------+-------------+---------------+--------+-------------
+    public | t1   | table | postgres | permanent   | heap          | 569 MB |
+    ---
+    ```
 17. **Объясните полученный результат**
-   ```
-   ```
+     ```
+     т.к. автовакуум выключен, мертвые строки не удаляеются, но даже с включенным автовакуумом размер файла таблицы не уменьшиьтся, для этого нужно использовать vacuum full t1
+     ---
+     vacuum FULL t2;
+     \dt+ t1
+                                  List of relations
+     Schema | Name | Type  |  Owner   | Persistence | Access method | Size  | Description
+     --------+------+-------+----------+-------------+---------------+-------+-------------
+     public | t1   | table | postgres | permanent   | heap          | 57 MB |
+     ```
 18. **Не забудьте включить автовакуум)**
+     ```
+     alter table t1 set (autovacuum_enabled = on);
+     ```
+
+   Задание со *:  
+   Написать анонимную процедуру, в которой в цикле 10 раз обновятся все строчки в искомой таблице.  
+   Не забыть вывести номер шага цикла.  
    ```
+   DO  
+   $do$  
+   BEGIN  
+   FOR i IN 1..10 LOOP  
+   RAISE NOTICE 'start step %', i;  
+   update t1 set col=col||'q';
+   RAISE NOTICE 'end step %', i;
+   END LOOP;  
+   END  
+   $do$;  
    ```
----
-Задание со *:  
-Написать анонимную процедуру, в которой в цикле 10 раз обновятся все строчки в искомой таблице.  
-Не забыть вывести номер шага цикла.  
+
