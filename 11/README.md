@@ -86,3 +86,6 @@ full_page_writes = off
 ```
 Задание со *: аналогично протестировать через утилиту https://github.com/Percona-Lab/sysbench-tpcc (требует установки
 https://github.com/akopytov/sysbench)
+```
+не выполнял
+```
